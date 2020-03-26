@@ -7,13 +7,15 @@ class DogModel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80))
     breed = db.Column(db.String(80))
+    age = db.Column(db.Integer)
 
-    def __init__(self, name, breed):
+    def __init__(self, name, breed, age):
         self.name = name
         self.breed = breed
+        self.age = age
 
     def json(self):
-        return {'name': self.name, 'breed': self.breed}
+        return {'name': self.name, 'breed': self.breed, 'age': self.age}
 
     @classmethod
     def get_from_db(cls, name):

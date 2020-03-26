@@ -5,6 +5,7 @@ from models.dog import DogModel
 class Dog(Resource):
     parser = reqparse.RequestParser()
     parser.add_argument('breed', type=str, required=True, help='Doggo needs a breed')
+    parser.add_argument('age', type=int, required=True, help='Doggo needs an age')
 
     """
     GET /dog
@@ -24,7 +25,7 @@ class Dog(Resource):
             return {'message': '"{}" already exists'.format(name)}, 400
 
         data = Dog.parser.parse_args()
-        dog = DogModel(name, data['breed'])
+        dog = DogModel(name, data['breed'], data['age'])
 
         try:
             dog.save_to_db()
@@ -41,9 +42,10 @@ class Dog(Resource):
         dog = DogModel.get_from_db(name)
 
         if dog is None:
-            dog = DogModel(name, data['breed'])
+            dog = DogModel(name, data['breed'], data['age'])
         else:
             dog.breed = data['breed']
+            dog.age = data['age']
 
         try:
             dog.save_to_db()
