@@ -14,3 +14,7 @@ class DogModel(db.Model):
 
     def json(self):
         return {'name': self.name, 'breed': self.breed}
+
+    @classmethod
+    def get_by_name(cls, name):
+        return cls.query.filter_by(name=name).first()

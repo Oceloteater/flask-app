@@ -4,11 +4,15 @@ from models.dog import DogModel
 
 class Dog(Resource):
     parser = reqparse.RequestParser()
-    parser.add_argument('name', type=str, required=True, help='Dog needs a name')
-    parser.add_argument('breed', type=str, required=True, help='Dog needs a breed')
+    parser.add_argument('name', type=str, required=True, help='Doggo needs a name')
+    parser.add_argument('breed', type=str, required=True, help='Doggo needs a breed')
 
     def get(self, name):
-        pass
+        dog = DogModel.get_by_name(name)
+        if dog:
+            return dog.json()
+
+        return {'message': 'Doggo not found'}, 404
 
     def post(self, name):
         pass
@@ -22,4 +26,4 @@ class Dog(Resource):
 
 class DogList(Resource):
     def get(self):
-        pass
+        return {'dogs': [dog.json() for dog in DogModel.query.all()]}
