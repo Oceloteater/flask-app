@@ -1,5 +1,9 @@
 from flask_restful import Resource, reqparse
 from models.dog import DogModel
+import json
+import redis
+
+redis = redis.StrictRedis('localhost', 6379, charset="utf-8", decode_responses=True)
 
 
 class Dog(Resource):
@@ -11,18 +15,24 @@ class Dog(Resource):
     GET /dog
     """
     def get(self, name):
-        dog = DogModel.get_from_db(name)
+        dog = redis.get(name)
         if dog:
-            return dog.json()
+            print('-- This is coming from cache --')
+            return json.loads(dog)
+        else:
+            dog = DogModel.get_from_db(name)
+            if dog:
+                redis.setex(dog.name, 90, json.dumps(dog.json()))
+                return dog.json()
 
-        return {'message': 'Doggo not found'}, 404
+            return {'message': 'Doggo not found'}, 404
 
     """
     POST /dog
     """
     def post(self, name):
         if DogModel.get_from_db(name):
-            return {'message': '"{}" already exists'.format(name)}, 400
+            return {'message': '{} already exists'.format(name)}, 400
 
         data = Dog.parser.parse_args()
         dog = DogModel(name, data['breed'], data['age'])

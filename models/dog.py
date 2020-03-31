@@ -15,7 +15,7 @@ class DogModel(db.Model):
         self.age = age
 
     def json(self):
-        return {'name': self.name, 'breed': self.breed, 'age': self.age}
+        return {'id': self.id, 'name': self.name, 'breed': self.breed, 'age': self.age}
 
     @classmethod
     def get_from_db(cls, name):

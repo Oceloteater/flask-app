@@ -1,11 +1,12 @@
-from flask import Flask, render_template
+from flask import Flask
 from flask_restful import Api
-from db import db
 from resources.dog import Dog, DogList
+from db import db
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
 api = Api(app)
 
 
